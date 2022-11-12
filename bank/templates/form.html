@@ -1,0 +1,83 @@
+{% block body %}
+{% load static %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<div class="container" style = "margin-top:50px">
+    <h2 class="text-center">Fill the Form</h2>
+    <br><br>
+    <form method="post" action="ok" id="indexForm" data-courses-url="{% url 'ajax_load_courses' %}">
+         {% csrf_token %}
+        <label>Name</label>
+        <input  class="form-control" type="text" placeholder="Enter your name" name="username" required>
+        <label>Email</label>
+        <input  class="form-control" type="email" placeholder="Enter your email" name="email" required>
+
+         <label>Phone Number</label>
+        <input  class="form-control" type="text" placeholder="Enter your number" name="number" maxlength="10" required >
+        <label>Gender</label>
+
+        <label class="form-control"><input type="radio" name="gender" required>Female
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="gender" required>Male</label>
+        <label>Date of Birth</label>
+        <input  class="form-control" type="date" placeholder="Enter your date of birth" name="dob" required>
+        <label>Address</label>
+        <input  class="form-control" type="text" placeholder="Enter your address" name="add" required>
+
+        <label>District</label>
+        <select name="programming" id="programming" class="form-control">
+            <option value="">---select district---</option>
+            {% for i in program %}
+            <option value="{{i.id}}">{{i.name}}</option>
+            {% endfor %}
+        </select>
+
+        <label>Branches</label>
+      <select name="courses" id="courses" class="form-control">
+
+        </select>
+        <label>Account Type</label>
+        <select name="account"  class="form-control">
+            <option value="">---select account type---</option>
+
+            <option>Savings Account</option>
+            <option>Current Account</option>
+            <option>Fixed Account</option>
+
+        </select>
+         <label>Materials</label>
+        <label class="form-control"><input type="checkbox" name="material">Cheque
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" name="material">Debit Card&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" name="material">Credit Card</label>
+        <br>
+        <input type = "submit" value="Submit" class="form-control btn btn-primary">
+        <br><br>
+       <center><button class="btn btn-primary"><a style="text-decoration: none;color:white" href="/">
+      Logout</a>
+    </button></center>
+    </form>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#programming").change(function () {
+      var url = $("#indexForm").attr("data-courses-url");  // get the url of the `load_courses` view
+      var programmingId = $(this).val();  // get the selected programming ID from the HTML input
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/load-courses/)
+        data: {
+          'programming': programmingId       // add the programming id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_courses` view function
+          $("#courses").html(data);  // replace the contents of the course input with the data that came from the server
+        }
+      });
+
+    });
+  </script>
+
+
+{% endblock%}
